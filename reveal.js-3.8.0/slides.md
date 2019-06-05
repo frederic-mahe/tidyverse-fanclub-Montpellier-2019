@@ -69,6 +69,22 @@ Interface graphique pour R (et bien plus)
 - et beaucoup d'autres,
 
 
+### Objectifs
+
+gagner en lisibilité et standardiser:
+
+``` R
+## R base
+d[, function3(function2(function1(d$var == 0)))]
+
+# tidy
+d %>%
+    filter(var == 0) %>%
+    function1() %>%
+    function2() %>%
+    function3()
+```
+
 
 ### Cleaning and visualizing genomic data
 
