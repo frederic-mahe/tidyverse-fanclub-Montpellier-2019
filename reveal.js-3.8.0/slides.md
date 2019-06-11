@@ -86,6 +86,7 @@ d %>%
 ```
 
 
+
 ### Cleaning and visualizing genomic data
 
 [a case study in tidy analysis](http://varianceexplained.org/r/tidy-genomics/)
@@ -99,7 +100,7 @@ David Robinson
 
 [Brauer et al. (2008)](https://doi.org/10.1091/mbc.E07-08-0779)
 
-[dataset](http://varianceexplained.org/files/Brauer2008_DataSet1.tds)
+[téléchargez-moi !](http://varianceexplained.org/files/Brauer2008_DataSet1.tds)
 
 
 ## Premières commandes avec R Studio
@@ -110,7 +111,7 @@ library(tidyverse)
 ## load
 read_tsv("Brauer2008_DataSet1.tds") -> Brauer2008_DataSet1
 
-## inspect
+## inspect (different commands)
 View(Brauer2008_DataSet1)
 dim(Brauer2008_DataSet1)
 glimpse(Brauer2008_DataSet1)
@@ -209,7 +210,34 @@ Brauer2008_DataSet1 %>%
 ```
 
 
-## Élimination des espaces
+la commande _join_ est le complément de _separate_
+
+beaucoup de commandes _tidyverse_ ont une commande complémentaire, par
+exemple _gather_ est le complément de _spread_
+
+
+## Élimination des espaces (simple)
+
+fonction _trimws_ (trim whitespace) :
+
+``` R
+Brauer2008_DataSet1 %>%
+    separate(NAME, new_cols, sep = "[|]{2}") %>%
+    mutate(name = trimws(BP)) %>%
+    select(BP) %>%
+    head()
+```
+``` text
+1 ER to Golgi transport
+2 biological process unknown
+3 proteolysis and peptidolysis
+4 mRNA polyadenylylation*
+5 vesicle fusion*
+6 biological process unknown
+```
+
+
+## Élimination des espaces (multiple)
 
 fonction _trimws_ (trim whitespace) :
 
@@ -487,6 +515,8 @@ Brauer2008_DataSet1 %>%
 ``` R
 library(tidyverse)
 
+new_cols <- c("name", "BP", "MF", "systematic_name", "number")
+
 ## load and clean
 read_tsv("Brauer2008_DataSet1.tds") %>%
     separate(NAME, new_cols, sep = "[|]{2}") %>%
@@ -593,449 +623,9 @@ RStudio](https://www.rstudio.com/resources/cheatsheets/), tutoriel
 [ggplot2](http://r-statistics.co/ggplot2-Tutorial-With-R.html)
 
 
-
 ### Exemples avancés
 
 ![owl](https://cdn-images-1.medium.com/max/1000/1*ps1LThoFav5Joqyd1mPAyg.jpeg) <!-- .element height="50%" width="50%" -->
-
-
-<!-- ### Gerer des données temporelles/spatiales  -->
-
-<!-- Données d'abondances de cullicoides sur des piègages en France métropolitaine sur plusieurs années. -->
-
-<!--  ![imicola]() -->
-
-<!-- Format csv -\> "comma separated value" -->
-
-<!-- Les champs sont séparés par le charactère **"|"** -->
-
-<!--  ![dataset]() -->
-<!-- ## Import et manipulation des données  -->
-
-    
-    
-<!--     data = read.table("uniqDataOcapi.csv",sep="|",header=T,na.strings = "NA", -->
-<!--     fill=TRUE, strip.white=TRUE, blank.lines.skip = TRUE)  -->
-<!--     data %>% tbl_df %>% View -->
-    				
-
-<!--  ![dataset]() -->
-
-    
-    
-<!--     td = data %>% tbl_df %>% na.omit %>% mutate(.,lat = as.numeric(LAT_IDENTIF)) -->
-<!--     %>% mutate(.,long = as.numeric(LONG_IDENTIF)) %>%   -->
-<!--      mutate(.,date =as.Date(DATEDEBUT,"%m/%d/%Y")) %>%  -->
-<!--      mutate(.,datesp = date) %>% -->
-<!--     separate(.,datesp,c("year","month","day")) %>% -->
-<!--     select(.,ID_SITE,long,lat,date,year,month,ESPECE,NBINDIV,NBMALES,NBFEMELLES) -->
-    
-    				
-
-    
-<!--     > td -->
-<!--     Source: local data frame [54,634 x 10] -->
-    
-<!--        ID_SITE long lat date year month ESPECE NBINDIV -->
-<!--         (fctr) (dbl) (dbl) (date) (chr) (chr) (fctr) (int) -->
-<!--     1 01PL1 5.79 46.06 2009-10-12 2009 10 Culicoides sp. 0 -->
-<!--     2 01PL1 5.79 46.06 2009-10-19 2009 10 Culicoides sp. 0 -->
-<!--     3 01PL1 5.79 46.06 2009-10-26 2009 10 obsoletus/scoticus 4 -->
-<!--     4 01PL1 5.79 46.06 2009-10-05 2009 10 lupicaris 11 -->
-<!--     5 01PL1 5.79 46.06 2009-10-05 2009 10 obsoletus/scoticus 226 -->
-<!--     6 01PL1 5.79 46.06 2009-10-05 2009 10 obsoletus s.st 1 -->
-<!--     7 01PL1 5.79 46.06 2009-10-05 2009 10 pulicaris 14 -->
-<!--     8 01PL1 5.79 46.06 2009-11-02 2009 11 Culicoides sp. 0 -->
-<!--     9 01PL1 5.79 46.06 2009-11-23 2009 11 obsoletus/scoticus 2 -->
-<!--     10 01PL1 5.79 46.06 2009-11-30 2009 11 Culicoides sp. 0 -->
-<!--     .. ... ... ... ... ... ... ... ... -->
-<!--     Variables not shown: NBMALES (int), NBFEMELLES (int) -->
-    
-    
-    
-    					
-
-<!-- ### Manipulation des dates  -->
-
-<!-- grace au fonction as.Date() et format() -->
-
-<!--  ![date]() -->
-<!-- ### Affichage des données avec ggplot -->
-
-    
-    
-<!--     td %>% ggplot() + geom_boxplot(aes(group = months ,x=date,y= NBINDIV)) + -->
-<!--     scale_y_log10() +theme_bw()  -->
-    					
-
-<!--  ![p1]() -->
-
-    
-    										
-<!--     td %>% ggplot() + geom_boxplot(aes(group = months ,x=date,y= NBINDIV)) + -->
-<!--     scale_y_log10() + theme_bw() + scale_x_date(breaks = "6 month")  -->
-    
-    					
-
-<!--  ![p1]() -->
-
-    
-    										
-<!--     td %>% ggplot() + geom_boxplot(aes(group = months ,x=date,y= NBINDIV)) + -->
-<!--     scale_y_log10() + theme_bw() + scale_x_date(breaks = "1 month", labels = -->
-<!--     date_format("%b\n%Y"), limits = as.Date(c("2009-01-01","2010-01-01")))  -->
-    
-    					
-
-<!--  ![p1]() -->
-
-    
-<!--     > td -->
-<!--     Source: local data frame [54,634 x 10] -->
-    
-<!--        ID_SITE long lat date year month ESPECE NBINDIV -->
-<!--         (fctr) (dbl) (dbl) (date) (chr) (chr) (fctr) (int) -->
-<!--     1 01PL1 5.79 46.06 2009-10-12 2009 10 Culicoides sp. 0 -->
-<!--     2 01PL1 5.79 46.06 2009-10-19 2009 10 Culicoides sp. 0 -->
-<!--     3 01PL1 5.79 46.06 2009-10-26 2009 10 obsoletus/scoticus 4 -->
-<!--     4 01PL1 5.79 46.06 2009-10-05 2009 10 lupicaris 11 -->
-<!--     5 01PL1 5.79 46.06 2009-10-05 2009 10 obsoletus/scoticus 226 -->
-<!--     6 01PL1 5.79 46.06 2009-10-05 2009 10 obsoletus s.st 1 -->
-<!--     7 01PL1 5.79 46.06 2009-10-05 2009 10 pulicaris 14 -->
-<!--     8 01PL1 5.79 46.06 2009-11-02 2009 11 Culicoides sp. 0 -->
-<!--     9 01PL1 5.79 46.06 2009-11-23 2009 11 obsoletus/scoticus 2 -->
-<!--     10 01PL1 5.79 46.06 2009-11-30 2009 11 Culicoides sp. 0 -->
-<!--     .. ... ... ... ... ... ... ... ... -->
-<!--     Variables not shown: NBMALES (int), NBFEMELLES (int) -->
-    
-    
-    
-    					
-
-    
-<!--     td %>% ggplot() + geom_boxplot(aes(x=month,y= NBINDIV ,fill=year)) + -->
-<!--     scale_y_log10() + scale_fill_brewer(palette = "Set1") + theme_bw() -->
-    
-    					
-
-<!--  ![p1]() -->
-<!-- ### Recherche des espèces les plus représentées -->
-
-    
-    
-<!--     td %>% group_by(ESPECE) %>% summarize(mean(NBINDIV)) %>% top_n(.,10) -->
-    					
-
-    
-<!--     Selecting by mean(NBINDIV) -->
-<!--     Source: local data frame [10 x 2] -->
-    
-<!--                    ESPECE mean(NBINDIV) -->
-<!--                    (fctr) (dbl) -->
-<!--     1 abchazicus 124.33333 -->
-<!--     2 deltus ? 216.48458 -->
-<!--     3 dewulfi 181.55324 -->
-<!--     4 furcillatus 81.65903 -->
-<!--     5 grisescens 399.00000 -->
-<!--     6 imicola 860.28247 -->
-<!--     7 newsteadi 88.92803 -->
-<!--     8 obsoletus/scoticus 433.05892 -->
-<!--     9 saevus 111.71429 -->
-<!--     10 tauricus 780.00000 -->
-    
-    					
-
-    
-    
-<!--     td %>% filter(ESPECE == "imicola") %>% filter(year %in% -->
-<!--     c("2009","2010","2011")) %>% group_by(year) %>% ggplot() + -->
-<!--     geom_boxplot(aes(x=month,y= NBINDIV ,fill=year)) + scale_y_log10() + -->
-<!--     scale_fill_brewer(palette = "Set2") + theme_bw()  -->
-    					
-
-<!--  ![p1]() -->
-
-    
-    
-<!--     tdfilt = td %>% filter(ESPECE %in% c("imicola","dewulfi","chiopterus")) %>% -->
-<!--     filter(year %in% c("2009","2010","2011"))					 -->
-    					
-<!--     tdfilt %>% group_by(year) %>% ggplot() + geom_boxplot(aes(x=month,y= NBINDIV -->
-<!--     ,fill=year)) + scale_y_log10() + scale_fill_brewer(palette = "Set2") + -->
-<!--     theme_bw() + facet_grid(ESPECE ~ .) -->
-    					
-
-<!--  ![p1]() -->
-
-    
-    
-<!--     tdfilt %>% group_by(year) %>% ggplot() + geom_boxplot(aes(x=month,y= NBINDIV -->
-<!--     ,fill=year)) + scale_y_log10() + scale_fill_brewer(palette = "Set2") + -->
-<!--     theme_bw() + facet_grid(year ~ ESPECE) -->
-    					
-
-<!--  ![p1]() -->
-
-    
-    
-<!--     tdfilt %>% group_by(year) %>% ggplot() + geom_violin(aes(x=month,y= NBINDIV -->
-<!--     ,fill=year),scale = "area", trim = FALSE ) + scale_y_log10() + -->
-<!--     scale_fill_brewer(palette = "Set2") + -->
-<!--     theme_bw() + facet_grid(year ~ ESPECE)   -->
-
-<!--  ![p1]() -->
-
-    
-    
-<!--     tdfilt %>% group_by(year) %>% ggplot() + geom_jitter(aes(x=month,y= NBFEMELLES -->
-<!--     ,color=year) ) + scale_y_log10() + scale_fill_brewer(palette = "Set2") + -->
-<!--     theme_bw() + facet_grid(year ~ ESPECE) -->
-    					
-
-<!--  ![p1]() -->
-<!-- ### Pour changer le format d'affichage des mois "a la main" -->
-
-    
-    
-<!--     monthformat = function(x){ -->
-<!--     return(format(as.Date(paste("1",x,sep="/"),format="%d/%m"),"%b"))} -->
-    
-    					
-
-    
-    
-<!--     > monthformat("10") -->
-<!--     [1] "oct." -->
-    
-    					
-
-    
-    
-<!--     tdfilt %>% group_by(year) %>% ggplot() + geom_boxplot(aes(x=month,y= -->
-<!--     NBFEMELLES ,fill=year)) + scale_y_log10(labels = comma) + -->
-<!--     scale_x_discrete(labels = monthformat) -->
-<!--     + scale_fill_brewer(palette = "Set2",name="année") + theme_bw() + -->
-<!--     facet_grid(year ~ ESPECE) + -->
-<!--     theme(axis.text.x = element_text(angle = 45, hjust = 1)) + xlab(NULL) + -->
-<!--     ylab("Captures / Pièges / Nuit") + -->
-<!--     theme(text = element_text(family="Times", size = 14)) -->
-<!-- ``` -->
-
-<!--  ![p1]() -->
-
-    
-    
-<!--     tdfilt %>% group_by(year) %>% ggplot() + geom_boxplot(aes(x=month,y= -->
-<!--     NBFEMELLES )) + scale_y_log10(labels = comma) + scale_x_discrete(labels = -->
-<!--     monthformat) + theme_bw() + -->
-<!--     facet_grid(year ~ ESPECE) + theme(axis.text.x = element_text(angle = 45, hjust -->
-<!--     = 1)) + xlab(NULL) + ylab("Captures / -->
-<!--     Pièges / Nuit") + theme(text = element_text(family="Times", size = 14)) -->
-    					
-
-<!--  ![p1]() -->
-
-    
-    
-<!--     tdfilt %>% regroup(list("year","month")) %>% mutate(Sexratio = -->
-<!--     mean(NBFEMELLES/NBINDIV)) %>% group_by(year) %>% ggplot() + -->
-<!--     geom_boxplot(aes(x=month,y= NBINDIV -->
-<!--     ,fill = Sexratio)) + scale_y_log10(labels = comma) + scale_x_discrete(labels = -->
-<!--     monthformat) + theme_bw() + -->
-<!--     facet_grid(year ~ ESPECE) + theme(axis.text.x = element_text(angle = 45, hjust -->
-<!--     = 1)) + xlab(NULL) + ylab("Captures / -->
-<!--     Pièges / Nuit") + theme(text = element_text(family="Times", size = 14)) -->
-    					
-
-<!--  ![p1]() -->
-<!-- # Données spatiales ! -->
-
-<!-- ### ggmap -->
-
-<!-- Construit sur la même grammaire que ggplot, relativement accessible -->
-
-<!-- ### On recupère la carte sur laquelle les données sont projetées:  -->
-
-    
-    
-<!--     ?get_map -->
-    
-<!--     Grab a map. -->
-    
-<!--     Description: -->
-    
-<!--     ‘get_map’ is a smart wrapper that queries the Google Maps, -->
-<!--     OpenStreetMap, Stamen Maps or Naver Map servers for a map. -->
-    
-<!--     Usage: -->
-    
-<!--     get_map(location = c(lon = -95.3632715, lat = 29.7632836), zoom = "auto", -->
-<!--     scale = "auto", maptype = c("terrain", "terrain-background", "satellite", -->
-<!--     "roadmap", "hybrid", "toner", "watercolor", "terrain-labels", "terrain-lines", -->
-<!--     "toner-2010", "toner-2011", "toner-background", "toner-hybrid", -->
-<!--     "toner-labels", "toner-lines", "toner-lite"), source = c("google", "osm", -->
-<!--     "stamen", "cloudmade"), force = ifelse(source == "google", TRUE, TRUE), -->
-<!--     messaging = FALSE, urlonly = FALSE, filename = "ggmapTemp", -->
-<!--     crop = TRUE, color = c("color", "bw"), language = "en-EN", api_key) -->
-    
-    					
-
-<!-- ### On recupère la carte sur laquelle les données sont projetées:  -->
-
-    
-    
-<!--     France = get_map(location = "France",zoom = 5, source = "google",maptype = -->
-<!--     "satellite",color = "bw")  -->
-<!--     ggmap(France) -->
-    
-    					
-
-<!--  ![p1]() -->
-
-    
-    
-    
-    
-<!--     ggmap(France) + geom_point(data = tdfilt %>% -->
-<!--     regroup(list("year","ID_SITE","ESPECE")) %>% mutate(avg = log(mean(NBFEMELLES))), aes(x = long, -->
-<!--     y=lat, size = avg)) + facet_grid(year ~ ESPECE) + scale_x_continuous(limits = -->
-<!--     c(-6.5,9.5)) + -->
-<!--     scale_y_continuous(limits = c(41,51) ) + scale_size_continuous(name="Moyenne -->
-<!--     Captures/femelles/nuit",breaks=c(0,1,2,3,4,5),labels -->
-<!--     =c(1,10,100,1000,10000,100000))  -->
-    					
-    					
-
-<!--  ![p1]() -->
-<!-- ### Une carte par mois ? -->
-
-    
-<!--     months = unique(tdfilt$month) -->
-<!--     >months -->
-<!--     [1] "04" "07" "08" "10" "11" "05" "06" "09" "03" "12" "01" "02" -->
-<!--     >months[sort.list(months)] -->
-<!--     [1] "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12" -->
-    
-    					
-
-    
-<!--     saveGIF({ -->
-<!--     	for(i in months[sort.list(months)]) -->
-<!--     		{ print(ggmap(France) + -->
-<!--     		geom_point(data = tdfilt %>% filter(month == i) %>% regroup(list("year","ID_SITE","ESPECE")) %>% mutate(avg = log(mean(NBFEMELLES))), aes(x = long, y=lat, size = avg)) + facet_grid(year ~ ESPECE) + scale_x_continuous(limits = c(-6.5,9.5)) + scale_y_continuous(limits= c(41,51) ) + ggtitle(monthformat(i)) + scale_size_continuous(name="Moyenne Captures/femelles/nuit", limits=c(0,6),breaks =c(0,1,2,3,4,5),labels=c(1,10,100,1000,10000,100000)))} -->
-<!--     	}, interval = 1,movie.name="Culicoids.gif") -->
-    
-    
-    					
-
-<!--  ![p0]() -->
-<!-- ### Données "PopPhyl"  -->
-<!--  ![p0]() -->
-
-    
-<!--     dp = read.table("data_and_script_part2/popphyl_data.csv",sep=",",header = T) -->
-<!--     dp %>% tbl_df %>% View	 -->
-    					
-
-<!--  ![p1]() -->
-
-    
-    					
-<!--     dp %>% ggplot() + geom_point(aes(x=adult_size,y=piS)) -->
-    					
-    					
-
-<!--  ![p1]() -->
-
-    
-<!--     dp %>% ggplot() + geom_point(aes(x=adult_size,y=piS*100)) + -->
-<!--     scale_x_log10(limits = c(0.1,1000), breaks = c(1,10,100)) + scale_y_log10() -->
-    					
-
-<!--  ![p1]() -->
-
-    
-<!--     dp %>% ggplot(aes(x = adult_size, y = piS)) + geom_point(size = 3,aes(shape = -->
-<!--     Taxo_for_fig )) + scale_x_log10(limits = c(0.1,100), breaks = c(1,10,100)) + -->
-<!--     scale_y_log10()  -->
-    					
-    					
-
-<!--  ![p1]() -->
-
-    
-<!--     baseplot = dp %>% mutate(parental_invest = propagule_size / adult_size) %>% -->
-<!--     na.omit %>% ggplot(aes(x=adult_size,y =piS)) + geom_point(size =3, aes(color = -->
-<!--     parental_invest, shape = Taxo_for_fig )) + scale_x_log10(limits = c(0.1,100), -->
-<!--     breaks = c(1,10,100)) + scale_y_log10()  -->
-<!--     baseplot + scale_color_gradientn(colours = rainbow(7) , trans = "log", limits = -->
-<!--     c(0.0005,1), values =c (0.001,0.01,0.1,1), breaks = c(0.001,0.01,0.1,1), labels -->
-<!--     = comma) + theme_bw() -->
-    
-    					
-
-<!--  ![p1]() -->
-
-    
-<!--     baseplot + scale_color_gradientn(colours = rainbow(7) , trans = "log", limits = -->
-<!--     c(0.0005,1), values =c (0.001,0.01,0.1,1), breaks = c(0.001,0.01,0.1,1), labels -->
-<!--     = comma) + theme_bw() + -->
-<!--     geom_smooth(method = "lm", se = TRUE, size = 0.7, color = "black", formula = y -->
-<!--     					~ x)  -->
-
-<!--  ![p1]() -->
-<!-- ### Ajouter une equation ... -->
-<!-- [Ou trouver cette info ?](http://stackoverflow.com/questions/7549694/ggplot2-adding-regression-line-equation-and-r2-on-graph) -->
-
-    
-<!--     	require(devtools) -->
-<!--     source_gist("524eade46135f6348140") -->
-    
-    				
-    					
-
-    
-<!--     baseplot + scale_color_gradientn(colours = rainbow(7) , trans = "log", limits = -->
-<!--     c(0.0005,1), values =c (0.001,0.01,0.1,1), breaks = c(0.001,0.01,0.1,1), labels -->
-<!--     = comma) + theme_bw() + -->
-<!--     geom_smooth(method = "lm", se = TRUE, size = 0.7, color = "black", formula = y -->
-<!--     ~ x) + stat_smooth_func(geom="text", -->
-<!--     method = "lm", hjust= 0, parse =TRUE )  -->
-
-<!--  ![p1]() -->
-
-    
-<!--     dp = read.table("data_and_script_part2/popphyl_data.csv",sep=",",header = T) -->
-<!--     dp %>% mutate(parental_invest = propagule_size / adult_size) %>% na.omit %>% -->
-<!--     ggplot(aes(x=adult_size,y =piS)) + geom_point(size =3, aes(color = -->
-<!--     parental_invest, shape = Taxo_for_fig -->
-<!--     )) + scale_x_log10(limits = c(0.1,100), breaks = c(1,10,100)) + scale_y_log10() -->
-<!--     + scale_color_gradientn(name = -->
-<!--     "Parental investment",colours = rainbow(7) , trans = "log", limits = -->
-<!--     c(0.0005,1), values =c -->
-<!--     (0.001,0.01,0.1,1), breaks = c(0.001,0.01,0.1,1), labels = comma) + -->
-<!--     scale_shape(name = "Taxonomic group") + -->
-<!--     theme_bw() + geom_smooth(method = "lm", se = TRUE, size = 0.7, color = "black", -->
-<!--     formula = y ~ x) + -->
-<!--     stat_smooth_func(geom="text", method = "lm", hjust= 0, parse =TRUE ) + -->
-<!--     xlab("Adult size (cm)") + -->
-<!--     ylab(expression(paste(pi,"s"))) + theme(text= -->
-<!--     element_text(family="Bookman",size=14)) -->
-    					
-
-<!--  ![p1]() -->
- 
-
-<!-- ### Graph interactif avec plotly  -->
-
-    
-    			
-<!--     plot_ly(dp %>% mutate(parental_invest = propagule_size / adult_size) %>% -->
-<!--     na.omit , x = adult_size, y = piS, text = paste("Species: ", Species,"\n -->
-<!--     Family: ",Taxo_for_fig), color = -->
-<!--     log(parental_invest), mode = "markers") %>% layout(xaxis = list(title = "Adult -->
-<!--     size " , type = "log")) %>% -->
-<!--     layout(yaxis = list(title = "Pi_s", type = "log")) -->
 
 
 
