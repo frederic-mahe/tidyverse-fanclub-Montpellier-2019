@@ -24,3 +24,10 @@ Support de la formation manipulation de données et figures sous R
 
 Prérequis : avoir installé R et R studio (pour les personnes venant
 avec leur propre ordinateur).
+
+Pour visualiser le diaporama, il faut télécharger le [fichier
+zip](https://github.com/frederic-mahe/tidyverse-fanclub-Montpellier-2019/archive/master.zip),
+le décompresser sur votre disque dur, aller dans le sous-dossier
+`reveal.js-3.8.0` et ouvrir le fichier `index.html`. Ce dernier
+s'ouvre normalement dans votre navigateur web et les diapos peuvent
+être parcourues à l'aide des flèches directionnelles.
